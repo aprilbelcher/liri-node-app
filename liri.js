@@ -2,6 +2,7 @@
 var inquirer = require('inquirer');
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
+var request = require('request');
 
 var accessKeys = require("./keys.js");
 
@@ -69,7 +70,17 @@ inquirer.prompt([
                
 
                   })     
-        })
+            });
+            break;
+        case "movie-this":
+            inquirer.prompt([
+                {
+                type: "input",
+                name: "movieName",
+                default: "Mr. Nobody",
+                message: "Enter a movie name"
+                }
+            ])
     };
 });
 
