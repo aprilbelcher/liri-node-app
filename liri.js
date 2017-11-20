@@ -55,18 +55,17 @@ inquirer.prompt([
             ])
             .then(function(answer){
                 spotify.search({ type: 'track', query: answer.songName, limit: 10}, function(err, data) {
-                    // if (err) {
-                    //   return console.log('Error occurred: ' + err);
-                    // }
+                    if (err) {
+                      return console.log('Error occurred: ' + err);
+                    }
                     var songs = data.tracks.items;
-                    console.log(songs[5], songs.length);
-                  for (song = 0; song < songs.length; song++ ){
-                    console.log("Artist: " + songs[song]); 
-                    console.log("Song: " + answer.songName);
-                    console.log("Preview Link: " + songs[song].external_urls.spotify);
-                    console.log("Album: " + songs[song].album.name);
-                    console.log();
-                  } 
+                      for (song = 0; song < songs.length; song++ ){
+                        console.log("Artist: " + songs[song].artists[0].name); 
+                        console.log("Song: " + songs[song].name);
+                        console.log("Preview Link: " + songs[song].external_urls.spotify);
+                        console.log("Album: " + songs[song].album.name);
+                        console.log();
+                    } 
                
 
                   })     
