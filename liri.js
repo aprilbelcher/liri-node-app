@@ -1,16 +1,21 @@
 // console.log("this is working");
 var inquirer = require('inquirer');
-var twitKey = require("./keys.js");
-// console.log(twitKey);
-
 var Twitter = require('twitter');
+var Spotify = require('node-spotify-api');
+
+var accessKeys = require("./keys.js");
 
 var client = new Twitter({
-    consumer_key: twitKey.consumer_key,
-    consumer_secret: twitKey.consumer_secret,
-    access_token_key: twitKey.access_token_key,
-    access_token_secret: twitKey.access_token_secret
+    consumer_key: accessKeys.consumer_key,
+    consumer_secret: accessKeys.consumer_secret,
+    access_token_key: accessKeys.access_token_key,
+    access_token_secret: accessKeys.access_token_secret
   });
+
+var spotify = new Spotify({
+id: accessKeys.Client_ID,
+secret: accessKeys.Client_Secret
+});
 
 inquirer.prompt([
     {
@@ -29,15 +34,43 @@ inquirer.prompt([
             };
             client.get('statuses/user_timeline', params, function(error, tweets, response) {
                 if (!error) {
-                    for (i = 0; i < tweets.length; i++) { 
-                        console.log(tweets[i].text)
-                        console.log(tweets[i].created_at)
+                    for (tweet = 0; tweet < tweets.length; tweet++) { 
+                        console.log(tweets[tweet].text)
+                        console.log(tweets[tweet].created_at)
                         console.log()
                     }
                 }
             });
             break;
-    }
-})
+        
+        case "spotify-this-song":
+            inquirer.prompt([
+                {
+                type: "input",
+                name: "songName",
+                default: "The Sign, Ace",
+                message: "Enter a song"
+                }
+            ])
+            .then(function(answer){
+                spotify.search({ type: 'track', query: answer.songName, limit: 10}, function(err, data) {
+                    // if (err) {
+                    //   return console.log('Error occurred: ' + err);
+                    // }
+                    var songs = data.tracks.items;
+                    console.log(songs[5], songs.length);
+                  for (song = 0; song < songs.length; song++ ){
+                    console.log("Artist: " + songs[song]); 
+                    console.log("Song: " + answer.songName);
+                    console.log("Preview Link: " + songs[song].external_urls.spotify);
+                    console.log("Album: " + songs[song].album.name);
+                    console.log();
+                  } 
+               
+
+                  })     
+        })
+    };
+});
 
 
