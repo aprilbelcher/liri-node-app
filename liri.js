@@ -56,7 +56,7 @@ inquirer.prompt([
             .then(function(answer){
                 spotify.search({ type: 'track', query: answer.songName, limit: 10}, function(err, data) {
                     if (err) {
-                      return console.log('Error occurred: ' + err);
+                      console.log('Error occurred: ' + err);
                     }
                     var songs = data.tracks.items;
                       for (song = 0; song < songs.length; song++ ){
@@ -71,6 +71,7 @@ inquirer.prompt([
                   })     
             });
             break;
+
         case "movie-this":
             inquirer.prompt([
                 {
@@ -80,7 +81,25 @@ inquirer.prompt([
                 message: "Enter a movie name"
                 }
             ])
-    };
-});
-
-
+            .then(function(answer){
+                request("http://www.omdbapi.com/?apikey=trilogy&t="+ answer.movieName, function(err, response, body){
+                    if (err) {
+                    console.log('Error occurred: ' + err);
+                    } 
+                    else if (JSON.parse(body).Response === "False") {
+                        console.log(JSON.parse(body).Error)
+                      } 
+                    else {
+                    console.log("Movie Title: " + JSON.parse(body).Title);
+                    console.log("Year: " + JSON.parse(body).Year);
+                    console.log("Rating: " + JSON.parse(body).imdbRating);
+                    console.log("Country: " + JSON.parse(body).Country);
+                    console.log("Language: " + JSON.parse(body).Language);
+                    console.log("Plot: " + JSON.parse(body).Plot);
+                    console.log("Actors: " + JSON.parse(body).Actors);
+                    
+                    }
+                });
+            });
+        }
+    });
